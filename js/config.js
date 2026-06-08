@@ -1,6 +1,6 @@
 // Set your deployed backend URL when hosting frontend on GitHub Pages
 // Example: 'https://academicos-api.onrender.com/api'
-const DEPLOYED_API_URL = '';
+const DEPLOYED_API_URL = 'https://acadmic-planner.onrender.com';
 
 const API_BASE = (() => {
   const host = window.location.hostname;
