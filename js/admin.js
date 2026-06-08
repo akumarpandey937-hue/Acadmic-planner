@@ -1,5 +1,17 @@
 let allUsers = [];
 
+function openAdminSidebar() {
+  document.getElementById('sidebar')?.classList.add('open');
+  document.getElementById('sidebarOverlay')?.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAdminSidebar() {
+  document.getElementById('sidebar')?.classList.remove('open');
+  document.getElementById('sidebarOverlay')?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   if (!Auth.requireAdmin()) return;
   bindAdminNav();
@@ -15,6 +27,7 @@ function bindAdminNav() {
       document.getElementById(`section-${section}`)?.classList.remove('hidden');
       document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
       link.classList.add('active');
+      closeAdminSidebar();
 
       const titles = { dashboard: 'Admin Dashboard', users: 'User Management', reports: 'Reports', notifications: 'Send Notifications', 'ai-credits': 'AI Credits' };
       document.getElementById('adminTitle').textContent = titles[section] || section;

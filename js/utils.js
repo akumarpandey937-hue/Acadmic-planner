@@ -1,4 +1,14 @@
 const Utils = {
+  getFirstName(name) {
+    if (!name || !name.trim()) return 'Student';
+    return name.trim().split(/\s+/)[0];
+  },
+
+  getInitial(name) {
+    if (!name || !name.trim()) return 'S';
+    return name.trim().charAt(0).toUpperCase();
+  },
+
   toast(message, type = 'info') {
     let container = document.querySelector('.toast-container');
     if (!container) {

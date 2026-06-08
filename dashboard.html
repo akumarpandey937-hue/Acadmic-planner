@@ -7,33 +7,35 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/icons.css">
 </head>
 <body>
   <div class="animated-bg"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="flex items-center gap-2 mb-8 px-2">
-      <span class="text-2xl">🎓</span>
+      <span class="brand-logo sm">AO</span>
       <span class="text-lg font-bold gradient-text">AcademicOS</span>
     </div>
 
     <nav class="space-y-1" id="sidebarNav">
-      <a class="sidebar-link active" data-section="overview">📊 Overview</a>
-      <a class="sidebar-link" data-section="cgpa">🎯 CGPA Predictor</a>
-      <a class="sidebar-link" data-section="study-plan">🤖 AI Study Planner</a>
-      <a class="sidebar-link" data-section="weakness">🔍 Weakness Detector</a>
-      <a class="sidebar-link" data-section="attendance">📅 Attendance</a>
-      <a class="sidebar-link" data-section="backlog">📚 Backlog Recovery</a>
-      <a class="sidebar-link" data-section="placement">💼 Placement</a>
-      <a class="sidebar-link" data-section="analytics">📈 Analytics</a>
-      <a class="sidebar-link" data-section="exam-predict">📝 Exam Predictor</a>
-      <a class="sidebar-link" data-section="notes">📄 AI Notes</a>
-      <a class="sidebar-link" data-section="topper">🏆 Topper Mode</a>
+      <a class="sidebar-link active" data-section="overview">Overview</a>
+      <a class="sidebar-link" data-section="cgpa">CGPA Predictor</a>
+      <a class="sidebar-link" data-section="study-plan">AI Study Planner</a>
+      <a class="sidebar-link" data-section="weakness">Weakness Detector</a>
+      <a class="sidebar-link" data-section="attendance">Attendance</a>
+      <a class="sidebar-link" data-section="backlog">Backlog Recovery</a>
+      <a class="sidebar-link" data-section="placement">Placement</a>
+      <a class="sidebar-link" data-section="analytics">Analytics</a>
+      <a class="sidebar-link" data-section="exam-predict">Exam Predictor</a>
+      <a class="sidebar-link" data-section="notes">AI Notes</a>
+      <a class="sidebar-link" data-section="topper">Topper Mode</a>
       <div class="border-t border-[var(--border)] my-3"></div>
-      <a class="sidebar-link" data-section="productivity">⏱️ Productivity</a>
-      <a class="sidebar-link" data-section="gamification">🎮 Gamification</a>
-      <a class="sidebar-link" data-section="tasks">✅ Tasks</a>
+      <a class="sidebar-link" data-section="productivity">Productivity</a>
+      <a class="sidebar-link" data-section="gamification">Gamification</a>
+      <a class="sidebar-link" data-section="tasks">Tasks</a>
     </nav>
 
     <div class="absolute bottom-6 left-5 right-5">
@@ -44,30 +46,31 @@
         </div>
         <div class="progress-bar"><div class="progress-fill" id="xpBar" style="width:0%"></div></div>
       </div>
-      <button onclick="Auth.logout()" class="sidebar-link w-full text-red-400">🚪 Logout</button>
+      <button onclick="Auth.logout()" class="sidebar-link w-full text-red-400">Logout</button>
     </div>
   </aside>
 
   <!-- Main Content -->
   <main class="main-content">
     <!-- Top Bar -->
-    <header class="flex items-center justify-between mb-8">
-      <div class="flex items-center gap-4">
-        <button class="btn btn-ghost lg:hidden" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
-        <div>
-          <h1 class="text-2xl font-bold" id="pageTitle">Overview</h1>
-          <p class="text-sm text-[var(--text-secondary)]">Welcome back, <span id="userName">Student</span></p>
+    <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+      <div class="flex items-center gap-3 sm:gap-4 min-w-0">
+        <button type="button" class="btn btn-ghost lg:hidden min-touch shrink-0" onclick="openSidebar()" aria-label="Open menu"><span class="icon" id="menuIconDash"></span></button>
+        <div class="min-w-0">
+          <h1 class="text-xl sm:text-2xl font-bold truncate" id="pageTitle">Overview</h1>
+          <p class="text-xs sm:text-sm text-[var(--text-secondary)] truncate">Welcome, <span id="userName" class="text-[var(--text-primary)] font-medium">Student</span></p>
         </div>
       </div>
-      <div class="flex items-center gap-3">
-        <button data-theme-toggle class="btn btn-ghost p-2">
-          <span class="theme-icon-light">☀️</span><span class="theme-icon-dark" style="display:none">🌙</span>
+      <div class="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
+        <button data-theme-toggle class="btn btn-ghost p-2 min-touch" aria-label="Toggle theme">
+          <span class="theme-icon-light icon" style="display:none"></span><span class="theme-icon-dark icon"></span>
         </button>
         <div class="relative">
-          <button class="btn btn-ghost p-2" onclick="toggleNotifications()">🔔<span id="notifBadge" class="hidden absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs flex items-center justify-center">0</span></button>
-          <div id="notifPanel" class="hidden absolute right-0 top-12 w-80 glass rounded-xl p-4 max-h-96 overflow-y-auto z-50"></div>
+          <button type="button" class="btn btn-ghost p-2 min-touch" onclick="toggleNotifications()" aria-label="Notifications"><span class="icon" id="bellIcon"></span><span id="notifBadge" class="hidden absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs flex items-center justify-center">0</span></button>
+          <div id="notifPanel" class="hidden fixed sm:absolute left-4 right-4 sm:left-auto sm:right-0 top-16 sm:top-12 w-auto sm:w-80 glass rounded-xl p-4 max-h-80 overflow-y-auto z-50"></div>
         </div>
-        <div class="badge badge-primary" id="aiCredits">50 AI Credits</div>
+        <div class="badge badge-primary text-xs sm:text-sm whitespace-nowrap hidden sm:inline-flex" id="aiCredits">50 AI Credits</div>
+        <div class="user-avatar-header" id="userAvatar" title="Your profile">A</div>
       </div>
     </header>
 
@@ -75,8 +78,17 @@
     <div id="sections">
       <!-- Overview -->
       <section id="section-overview" class="section active">
+        <div class="welcome-banner card mb-6 sm:mb-8" id="welcomeBanner">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-xl sm:text-2xl font-bold mb-1">Welcome, <span id="welcomeName" class="gradient-text">Student</span></h2>
+              <p class="text-sm text-[var(--text-secondary)]">Good to see you back. Continue optimizing your academic journey today.</p>
+            </div>
+            <div class="user-avatar-lg" id="welcomeAvatar">A</div>
+          </div>
+        </div>
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div class="stat-card"><div class="stat-label">Study Streak</div><div class="stat-value gradient-text" id="streakVal">0🔥</div></div>
+          <div class="stat-card"><div class="stat-label">Study Streak</div><div class="stat-value gradient-text" id="streakVal">0 days</div></div>
           <div class="stat-card"><div class="stat-label">Total XP</div><div class="stat-value" id="xpVal">0</div></div>
           <div class="stat-card"><div class="stat-label">Level</div><div class="stat-value" id="levelVal">1</div></div>
           <div class="stat-card"><div class="stat-label">AI Credits</div><div class="stat-value" id="creditsVal">50</div></div>
@@ -327,16 +339,16 @@
       <section id="section-gamification" class="section hidden">
         <div class="grid lg:grid-cols-3 gap-6">
           <div class="card lg:col-span-2">
-            <h3 class="font-semibold mb-4">🏆 Leaderboard</h3>
+            <h3 class="font-semibold mb-4">Leaderboard</h3>
             <div id="leaderboard" class="overflow-x-auto"></div>
           </div>
           <div class="card">
-            <h3 class="font-semibold mb-4">🎖️ Achievements</h3>
+            <h3 class="font-semibold mb-4">Achievements</h3>
             <div id="achievementsList" class="space-y-2"></div>
           </div>
         </div>
         <div class="card mt-6">
-          <h3 class="font-semibold mb-4">⚡ Challenges</h3>
+          <h3 class="font-semibold mb-4">Challenges</h3>
           <div id="challengesList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
       </section>
@@ -364,7 +376,14 @@
   <script src="js/config.js"></script>
   <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
+  <script src="js/icons.js"></script>
   <script src="js/utils.js"></script>
+  <script>
+    document.getElementById('menuIconDash').innerHTML = Icons.svg(Icons.menu);
+    document.getElementById('bellIcon').innerHTML = Icons.svg(Icons.bell);
+    document.querySelectorAll('.theme-icon-light').forEach(el => { el.innerHTML = Icons.svg(Icons.sun); });
+    document.querySelectorAll('.theme-icon-dark').forEach(el => { el.innerHTML = Icons.svg(Icons.moon); });
+  </script>
   <script src="js/theme.js"></script>
   <script src="js/dashboard.js"></script>
 </body>

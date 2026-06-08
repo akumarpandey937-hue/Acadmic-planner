@@ -5,7 +5,7 @@ const achievementSchema = new mongoose.Schema({
   badgeId: { type: String, required: true },
   name: { type: String, required: true },
   description: String,
-  icon: { type: String, default: '🏆' },
+  icon: { type: String, default: 'trophy' },
   xpReward: { type: Number, default: 0 },
   category: { type: String, enum: ['study', 'streak', 'cgpa', 'placement', 'challenge', 'special'], default: 'study' },
   unlockedAt: { type: Date, default: Date.now }

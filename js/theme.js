@@ -8,11 +8,13 @@ const Theme = {
   set(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
-    document.querySelectorAll('.theme-icon-dark, .theme-icon-light').forEach(el => {
-      el.style.display = 'none';
-    });
-    document.querySelectorAll(`.theme-icon-${theme === 'dark' ? 'light' : 'dark'}`).forEach(el => {
-      el.style.display = 'inline';
+    document.querySelectorAll('[data-theme-toggle]').forEach(btn => {
+      const isDark = theme === 'dark';
+      btn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+      const lightIcon = btn.querySelector('.theme-icon-light');
+      const darkIcon = btn.querySelector('.theme-icon-dark');
+      if (lightIcon) lightIcon.style.display = isDark ? 'inline-flex' : 'none';
+      if (darkIcon) darkIcon.style.display = isDark ? 'none' : 'inline-flex';
     });
   },
 

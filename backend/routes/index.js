@@ -15,6 +15,7 @@ router.use('/productivity', require('./productivity'));
 router.use('/admin', require('./admin'));
 router.use('/notifications', require('./notifications'));
 router.use('/contact', require('./contact'));
+router.use('/public', require('./public'));
 
 router.get('/health', (req, res) => {
   res.json({ success: true, message: 'AcademicOS API is running', version: '1.0.0' });

@@ -16,12 +16,42 @@ document.addEventListener('DOMContentLoaded', () => {
   initDashboard();
 });
 
+function applyUserProfile(user) {
+  if (!user) return;
+  const firstName = Utils.getFirstName(user.name);
+  const initial = Utils.getInitial(user.name);
+
+  const nameEl = document.getElementById('userName');
+  if (nameEl) nameEl.textContent = firstName;
+
+  const welcomeName = document.getElementById('welcomeName');
+  if (welcomeName) welcomeName.textContent = firstName;
+
+  const avatar = document.getElementById('userAvatar');
+  if (avatar) {
+    avatar.textContent = initial;
+    avatar.title = user.name || firstName;
+  }
+
+  const welcomeAvatar = document.getElementById('welcomeAvatar');
+  if (welcomeAvatar) welcomeAvatar.textContent = initial;
+
+  updateUserStats(user);
+}
+
 async function initDashboard() {
   const user = Auth.getUser();
-  if (user) {
-    document.getElementById('userName').textContent = user.name;
-    updateUserStats(user);
-  }
+  if (user) applyUserProfile(user);
+
+  try {
+    const res = await Auth.getProfile();
+    if (res?.data) {
+      const merged = { ...user, ...res.data, name: res.data.name || user?.name };
+      const storage = localStorage.getItem('token') ? localStorage : sessionStorage;
+      storage.setItem('user', JSON.stringify(merged));
+      applyUserProfile(merged);
+    }
+  } catch {}
 
   bindNavigation();
   bindForms();
@@ -37,11 +67,24 @@ function updateUserStats(user) {
   document.getElementById('userXP').textContent = user.xp || 0;
   document.getElementById('xpVal').textContent = user.xp || 0;
   document.getElementById('levelVal').textContent = user.level || 1;
-  document.getElementById('streakVal').textContent = (user.studyStreak || 0) + '🔥';
+  const streak = user.studyStreak || 0;
+  document.getElementById('streakVal').textContent = streak + (streak === 1 ? ' day' : ' days');
   document.getElementById('creditsVal').textContent = user.aiCredits || 50;
   document.getElementById('aiCredits').textContent = (user.aiCredits || 50) + ' AI Credits';
   const xpProgress = ((user.xp || 0) % 100);
   document.getElementById('xpBar').style.width = xpProgress + '%';
+}
+
+function openSidebar() {
+  document.getElementById('sidebar')?.classList.add('open');
+  document.getElementById('sidebarOverlay')?.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar')?.classList.remove('open');
+  document.getElementById('sidebarOverlay')?.classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 function bindNavigation() {
@@ -49,7 +92,7 @@ function bindNavigation() {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       navigateTo(link.dataset.section);
-      document.getElementById('sidebar')?.classList.remove('open');
+      closeSidebar();
     });
   });
 }
@@ -107,7 +150,7 @@ async function loadOverview() {
     } else {
       el.innerHTML = '<p class="text-[var(--text-muted)]">No active challenges</p>';
     }
-    if (profile.data) updateUserStats({ ...Auth.getUser(), ...profile.data });
+    if (profile.data) applyUserProfile({ ...Auth.getUser(), ...profile.data });
   } catch {}
 }
 
@@ -141,7 +184,7 @@ async function handleCGPA(e) {
           </div>`).join('')}
       </div>
       <p class="text-sm mt-4 text-center ${d.feasible ? 'text-green-400' : 'text-yellow-400'}">
-        ${d.feasible ? '✅ Target is achievable!' : '⚠️ Consider adjusting your target'}
+        ${d.feasible ? 'Target is achievable with consistent effort.' : 'Consider adjusting your target CGPA.'}
       </p>`;
     Utils.toast('CGPA prediction complete!', 'success');
   } catch (err) { Utils.toast(err.message, 'error'); }
@@ -285,7 +328,7 @@ async function loadAttendance() {
             <span class="badge ${pct >= 75 ? 'badge-success' : 'badge-warning'}">${pct}%</span></div>
           <div class="progress-bar mb-2"><div class="progress-fill" style="width:${pct}%"></div></div>
           <div class="text-xs text-[var(--text-muted)]">${a.presentClasses}/${a.totalClasses} classes
-            ${a.classesNeeded > 0 ? ` • Need ${a.classesNeeded} more for 75%` : ' • ✅ Safe'}</div>
+            ${a.classesNeeded > 0 ? ` • Need ${a.classesNeeded} more for 75%` : ' • Above 75%'}</div>
         </div>`;
     }).join('');
   } catch {}
@@ -540,7 +583,7 @@ async function handleTopper(e) {
             <div class="flex justify-between"><span>Mock Tests</span><span>${student.mockTests}</span></div>
           </div>
         </div>
-        <div class="card border-primary/30"><h4 class="font-semibold mb-4">🏆 Topper Benchmark</h4>
+        <div class="card border-primary/30"><h4 class="font-semibold mb-4">Topper Benchmark</h4>
           <div class="space-y-2 text-sm">
             <div class="flex justify-between"><span>CGPA</span><span class="text-green-400">${topper.cgpa}</span></div>
             <div class="flex justify-between"><span>Study Hours/Week</span><span class="text-green-400">${topper.studyHours}</span></div>
@@ -639,7 +682,7 @@ async function loadHabits() {
     const res = await api.get('/productivity/habits');
     document.getElementById('habitsList').innerHTML = (res.data || []).map(h => `
       <div class="flex justify-between items-center p-2 rounded-lg bg-[var(--bg-glass)]">
-        <span>${h.icon} ${h.name} <span class="text-xs text-[var(--text-muted)]">🔥${h.streak}</span></span>
+        <span>${h.name} <span class="text-xs text-[var(--text-muted)]">${h.streak} day streak</span></span>
         <button onclick="completeHabit('${h._id}')" class="btn btn-primary text-xs py-1 px-3">Done</button>
       </div>`).join('') || '<p class="text-[var(--text-muted)] text-sm">No habits yet</p>';
   } catch {}
@@ -710,7 +753,7 @@ async function loadGamification() {
 
     document.getElementById('achievementsList').innerHTML = (achievements.data || []).map(a => `
       <div class="flex items-center gap-3 p-2 rounded-lg bg-[var(--bg-glass)]">
-        <span class="text-2xl">${a.icon}</span>
+        <div class="avatar-initials" style="width:36px;height:36px;font-size:12px;margin:0">${(a.name || 'A').charAt(0)}</div>
         <div><div class="font-medium text-sm">${a.name}</div><div class="text-xs text-[var(--text-muted)]">+${a.xpReward} XP</div></div>
       </div>`).join('') || '<p class="text-[var(--text-muted)] text-sm">Complete challenges to earn badges!</p>';
 
@@ -743,7 +786,7 @@ async function loadTasks() {
           ${t.dueDate ? `<div class="text-xs text-[var(--text-muted)]">Due: ${Utils.formatDate(t.dueDate)}</div>` : ''}
         </div>
         <span class="badge ${t.priority === 'high' ? 'badge-warning' : 'badge-primary'} text-xs">${t.priority}</span>
-        <button onclick="deleteTask('${t._id}')" class="text-red-400 text-sm">✕</button>
+        <button onclick="deleteTask('${t._id}')" class="text-red-400 text-xs font-medium">Delete</button>
       </div>`).join('') || '<p class="text-[var(--text-muted)]">No tasks yet. Add one to get started!</p>';
   } catch {}
 }

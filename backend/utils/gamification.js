@@ -2,13 +2,13 @@ const Achievement = require('../models/Achievement');
 const User = require('../models/User');
 
 const BADGES = {
-  first_login: { name: 'First Steps', icon: '🚀', xp: 10, category: 'special' },
-  streak_7: { name: 'Week Warrior', icon: '🔥', xp: 50, category: 'streak' },
-  streak_30: { name: 'Monthly Master', icon: '💎', xp: 200, category: 'streak' },
-  cgpa_8: { name: 'Honor Roll', icon: '🎓', xp: 100, category: 'cgpa' },
-  dsa_50: { name: 'Code Ninja', icon: '💻', xp: 75, category: 'placement' },
-  challenge_complete: { name: 'Challenge Champion', icon: '🏅', xp: 30, category: 'challenge' },
-  study_100h: { name: 'Century Scholar', icon: '📚', xp: 150, category: 'study' }
+  first_login: { name: 'First Steps', icon: 'star', xp: 10, category: 'special' },
+  streak_7: { name: 'Week Warrior', icon: 'timer', xp: 50, category: 'streak' },
+  streak_30: { name: 'Monthly Master', icon: 'trophy', xp: 200, category: 'streak' },
+  cgpa_8: { name: 'Honor Roll', icon: 'chart', xp: 100, category: 'cgpa' },
+  dsa_50: { name: 'Code Ninja', icon: 'target', xp: 75, category: 'placement' },
+  challenge_complete: { name: 'Challenge Champion', icon: 'check', xp: 30, category: 'challenge' },
+  study_100h: { name: 'Century Scholar', icon: 'book', xp: 150, category: 'study' }
 };
 
 exports.addXP = async (userId, amount) => {

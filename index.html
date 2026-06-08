@@ -8,6 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/icons.css">
   <script>
     tailwind.config = {
       theme: { extend: { colors: { primary: '#6366f1', secondary: '#8b5cf6', accent: '#06b6d4' } } }
@@ -20,67 +21,138 @@
 
   <!-- Navbar -->
   <nav class="navbar" id="navbar">
-    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2 text-xl font-bold">
-        <span class="text-2xl">🎓</span>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-3">
+      <a href="index.html" class="flex items-center gap-2 text-lg sm:text-xl font-bold shrink-0">
+        <span class="brand-logo sm">AO</span>
         <span class="gradient-text">AcademicOS</span>
       </a>
-      <div class="hidden md:flex items-center gap-8">
-        <a href="#features" class="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition">Features</a>
-        <a href="#demos" class="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition">Demos</a>
-        <a href="#testimonials" class="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition">Testimonials</a>
-        <a href="#faq" class="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition">FAQ</a>
-        <a href="#contact" class="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition">Contact</a>
+      <div class="hidden lg:flex items-center gap-6 xl:gap-8">
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#demos" class="nav-link">Demos</a>
+        <a href="#testimonials" class="nav-link">Testimonials</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+        <a href="#contact" class="nav-link">Contact</a>
       </div>
-      <div class="flex items-center gap-3">
-        <button data-theme-toggle class="btn btn-ghost p-2" aria-label="Toggle theme">
-          <span class="theme-icon-light">☀️</span><span class="theme-icon-dark" style="display:none">🌙</span>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button data-theme-toggle class="btn btn-ghost p-2 min-touch" aria-label="Toggle theme">
+          <span class="theme-icon-light icon" style="display:none"></span>
+          <span class="theme-icon-dark icon"></span>
         </button>
-        <a href="login.html" class="btn btn-ghost hidden sm:inline-flex">Login</a>
-        <a href="register.html" class="btn btn-primary">Get Started</a>
+        <a href="login.html" class="btn btn-ghost hidden sm:inline-flex text-sm">Login</a>
+        <a href="register.html" class="btn btn-primary text-sm sm:text-base px-4 sm:px-6">Get Started</a>
+        <button type="button" class="nav-hamburger lg:hidden min-touch" id="navToggle" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </div>
   </nav>
 
+  <!-- Mobile Menu -->
+  <div class="mobile-nav-overlay" id="mobileNavOverlay" aria-hidden="true"></div>
+  <aside class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <div class="mobile-nav-header">
+      <span class="font-bold gradient-text">Menu</span>
+      <button type="button" class="mobile-nav-close min-touch" id="navClose" aria-label="Close menu">Close</button>
+    </div>
+    <nav class="mobile-nav-links">
+      <a href="#features" class="mobile-nav-link">Features</a>
+      <a href="#demos" class="mobile-nav-link">Demos</a>
+      <a href="#testimonials" class="mobile-nav-link">Testimonials</a>
+      <a href="#faq" class="mobile-nav-link">FAQ</a>
+      <a href="#contact" class="mobile-nav-link">Contact</a>
+      <hr class="border-[var(--border)] my-2">
+      <a href="login.html" class="mobile-nav-link">Login</a>
+      <a href="register.html" class="btn btn-primary w-full mt-2">Get Started Free</a>
+    </nav>
+  </aside>
+
   <!-- Hero -->
-  <section class="min-h-screen flex items-center pt-24 pb-16 px-6">
-    <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-      <div class="hero-content">
-        <div class="badge badge-primary mb-6" data-aos="fade-up">🚀 AI-Powered Student Success</div>
-        <h1 class="text-5xl lg:text-7xl font-extrabold leading-tight mb-6" data-aos="fade-up" data-aos-delay="100">
-          Master Your <span class="gradient-text">Academic</span> Journey
+  <section class="hero-section min-h-screen flex items-center pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6 relative overflow-hidden">
+    <div class="hero-grid-bg" aria-hidden="true"></div>
+    <div class="hero-glow" aria-hidden="true"></div>
+
+    <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center relative z-10">
+      <div class="hero-content order-2 lg:order-1 text-center lg:text-left">
+        <div class="hero-badge badge badge-primary mb-6">
+          <span class="hero-badge-dot"></span>
+          AI-Powered Student Success
+        </div>
+        <h1 class="hero-title text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.15] mb-4 sm:mb-6">
+          Master Your <span class="gradient-text">Academic</span> Journey with
+          <span class="hero-rotate-word"><span id="heroWord">AI</span></span>
         </h1>
-        <p class="text-lg text-[var(--text-secondary)] mb-8 max-w-lg" data-aos="fade-up" data-aos-delay="200">
+        <p class="hero-subtitle text-base sm:text-lg text-[var(--text-secondary)] mb-6 sm:mb-8 max-w-lg mx-auto lg:mx-0">
           Predict CGPA, plan studies with AI, track attendance, detect weaknesses, and become placement-ready — all in one premium platform.
         </p>
-        <div class="flex flex-wrap gap-4" data-aos="fade-up" data-aos-delay="300">
-          <a href="register.html" class="btn btn-primary text-base px-8 py-4">Start Free →</a>
-          <a href="#demos" class="btn btn-secondary text-base px-8 py-4">See Demos</a>
+        <div class="hero-cta flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start">
+          <a href="register.html" class="btn btn-primary text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4 hero-btn-glow w-full sm:w-auto">Start Free</a>
+          <a href="#demos" class="btn btn-secondary text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto">See Demos</a>
         </div>
-        <div class="flex gap-8 mt-12" data-aos="fade-up" data-aos-delay="400">
-          <div><div class="text-3xl font-bold gradient-text" id="statStudents">0</div><div class="text-sm text-[var(--text-muted)]">Students</div></div>
-          <div><div class="text-3xl font-bold gradient-text" id="statCGPA">0</div><div class="text-sm text-[var(--text-muted)]">Avg CGPA Boost</div></div>
-          <div><div class="text-3xl font-bold gradient-text" id="statPlacement">0</div><div class="text-sm text-[var(--text-muted)]">Placement Rate</div></div>
+        <div class="hero-stats grid grid-cols-3 gap-4 sm:flex sm:flex-wrap sm:gap-8 mt-8 sm:mt-12 justify-center lg:justify-start">
+          <div class="hero-stat"><div class="text-xl sm:text-2xl md:text-3xl font-bold gradient-text" id="statStudents">—</div><div class="text-xs sm:text-sm text-[var(--text-muted)]">Registered Users</div></div>
+          <div class="hero-stat"><div class="text-xl sm:text-2xl md:text-3xl font-bold gradient-text" id="statActive">—</div><div class="text-xs sm:text-sm text-[var(--text-muted)]">Active Users</div></div>
+          <div class="hero-stat"><div class="text-xl sm:text-2xl md:text-3xl font-bold gradient-text" id="statCGPA">—</div><div class="text-xs sm:text-sm text-[var(--text-muted)]">Avg CGPA</div></div>
         </div>
-      </div>
-      <div class="hero-visual relative" data-aos="fade-left" data-aos-delay="200">
-        <div class="glass p-8 rounded-3xl">
-          <div class="grid grid-cols-2 gap-4">
-            <div class="neu-card p-5"><div class="text-3xl mb-2">📊</div><div class="font-semibold">CGPA Predictor</div><div class="text-sm text-[var(--text-muted)]">Smart semester planning</div></div>
-            <div class="neu-card p-5"><div class="text-3xl mb-2">🤖</div><div class="font-semibold">AI Study Planner</div><div class="text-sm text-[var(--text-muted)]">Personalized schedules</div></div>
-            <div class="neu-card p-5"><div class="text-3xl mb-2">🎯</div><div class="font-semibold">Placement Ready</div><div class="text-sm text-[var(--text-muted)]">Track your progress</div></div>
-            <div class="neu-card p-5"><div class="text-3xl mb-2">🏆</div><div class="font-semibold">Gamification</div><div class="text-sm text-[var(--text-muted)]">XP, badges & streaks</div></div>
+        <div class="hero-trust mt-10 pt-8 border-t border-[var(--border)]">
+          <p class="text-xs text-[var(--text-muted)] mb-3 uppercase tracking-widest">Trusted by students at</p>
+          <div class="hero-marquee">
+            <div class="hero-marquee-track">
+              <span>IIT</span><span>NIT</span><span>BITS</span><span>VIT</span><span>SRM</span><span>Manipal</span>
+              <span>IIT</span><span>NIT</span><span>BITS</span><span>VIT</span><span>SRM</span><span>Manipal</span>
+            </div>
           </div>
         </div>
       </div>
+
+      <div class="hero-visual relative order-1 lg:order-2 max-w-lg mx-auto lg:max-w-none w-full">
+        <div class="hero-image-wrap">
+          <div class="hero-ring hero-ring-1"></div>
+          <div class="hero-ring hero-ring-2"></div>
+          <img src="assets/hero-dashboard.png" alt="AcademicOS dashboard preview" class="hero-main-image" width="640" height="480" loading="eager">
+          <div class="hero-mobile-chips" aria-hidden="true">
+            <span class="hero-chip">CGPA Predictor</span>
+            <span class="hero-chip">AI Study Plans</span>
+            <span class="hero-chip">Progress Tracking</span>
+          </div>
+          <div class="hero-float-card hero-float-1 glass">
+            <span class="feature-icon" style="width:36px;height:36px;margin:0" id="heroIcon1"></span>
+            <div>
+              <div class="text-sm font-semibold">CGPA Predictor</div>
+              <div class="text-xs text-[var(--text-muted)]">Semester planning</div>
+            </div>
+          </div>
+          <div class="hero-float-card hero-float-2 glass">
+            <span class="feature-icon" style="width:36px;height:36px;margin:0" id="heroIcon2"></span>
+            <div>
+              <div class="text-sm font-semibold">AI Study Planner</div>
+              <div class="text-xs text-[var(--text-muted)]">Smart schedules</div>
+            </div>
+          </div>
+          <div class="hero-float-card hero-float-3 glass">
+            <span class="feature-icon" style="width:36px;height:36px;margin:0" id="heroIcon3"></span>
+            <div>
+              <div class="text-sm font-semibold">Progress Tracking</div>
+              <div class="text-xs text-[var(--text-muted)]">XP and streaks</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-mini-cards grid grid-cols-2 gap-3 mt-6">
+          <div class="neu-card p-4 hero-mini-card flex items-center gap-3"><span id="heroMini1"></span><div class="font-semibold text-sm">Placement Tools</div></div>
+          <div class="neu-card p-4 hero-mini-card flex items-center gap-3"><span id="heroMini2"></span><div class="font-semibold text-sm">Leaderboard</div></div>
+        </div>
+      </div>
     </div>
+
+    <a href="#features" class="hero-scroll-hint" aria-label="Scroll down">
+      <span class="hero-scroll-mouse"></span>
+    </a>
   </section>
 
   <!-- Features -->
-  <section id="features" class="py-24 px-6">
+  <section id="features" class="section-pad px-4 sm:px-6">
     <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-16" data-aos="fade-up">
-        <h2 class="text-4xl font-bold mb-4">Everything You Need to <span class="gradient-text">Succeed</span></h2>
+      <div class="text-center mb-10 sm:mb-16" data-aos="fade-up">
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Everything You Need to <span class="gradient-text">Succeed</span></h2>
         <p class="text-[var(--text-secondary)] max-w-2xl mx-auto">10+ powerful tools designed for engineering students who want to excel academically and professionally.</p>
       </div>
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="featuresGrid">
@@ -90,17 +162,17 @@
   </section>
 
   <!-- Demos -->
-  <section id="demos" class="py-24 px-6 bg-[var(--bg-secondary)]">
+  <section id="demos" class="section-pad px-4 sm:px-6 bg-[var(--bg-secondary)]">
     <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-16" data-aos="fade-up">
-        <h2 class="text-4xl font-bold mb-4">Interactive <span class="gradient-text">Demos</span></h2>
+      <div class="text-center mb-10 sm:mb-16" data-aos="fade-up">
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Interactive <span class="gradient-text">Demos</span></h2>
         <p class="text-[var(--text-secondary)]">Try our tools right here — no signup required for previews.</p>
       </div>
 
-      <div class="grid lg:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         <!-- CGPA Demo -->
         <div class="card" data-aos="fade-up" data-aos-delay="0">
-          <h3 class="text-xl font-bold mb-4"> CGPA Predictor</h3>
+          <h3 class="text-xl font-bold mb-4">CGPA Predictor</h3>
           <div class="space-y-3">
             <div><label class="text-sm text-[var(--text-secondary)]">Current CGPA</label><input type="number" id="demoCGPA" class="input-field mt-1" value="7.5" step="0.1" min="0" max="10"></div>
             <div><label class="text-sm text-[var(--text-secondary)]">Target CGPA</label><input type="number" id="demoTarget" class="input-field mt-1" value="8.5" step="0.1" min="0" max="10"></div>
@@ -112,7 +184,7 @@
 
         <!-- Study Planner Demo -->
         <div class="card" data-aos="fade-up" data-aos-delay="100">
-          <h3 class="text-xl font-bold mb-4">🤖 AI Study Planner</h3>
+          <h3 class="text-xl font-bold mb-4">AI Study Planner</h3>
           <div class="space-y-3">
             <div><label class="text-sm text-[var(--text-secondary)]">Subjects (comma separated)</label><input type="text" id="demoSubjects" class="input-field mt-1" value="DSA, OS, DBMS"></div>
             <div><label class="text-sm text-[var(--text-secondary)]">Hours/Day</label><input type="number" id="demoHours" class="input-field mt-1" value="4" min="1" max="16"></div>
@@ -124,7 +196,7 @@
 
         <!-- Placement Demo -->
         <div class="card" data-aos="fade-up" data-aos-delay="200">
-          <h3 class="text-xl font-bold mb-4">🎯 Placement Readiness</h3>
+          <h3 class="text-xl font-bold mb-4">Placement Readiness</h3>
           <div class="space-y-3">
             <div><label class="text-sm text-[var(--text-secondary)]">DSA Problems Solved</label><input type="number" id="demoDSA" class="input-field mt-1" value="80" min="0"></div>
             <div><label class="text-sm text-[var(--text-secondary)]">Projects Built</label><input type="number" id="demoProjects" class="input-field mt-1" value="2" min="0"></div>
@@ -141,30 +213,30 @@
   </section>
 
   <!-- Testimonials -->
-  <section id="testimonials" class="py-24 px-6">
+  <section id="testimonials" class="section-pad px-4 sm:px-6">
     <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-16" data-aos="fade-up">
-        <h2 class="text-4xl font-bold mb-4">Loved by <span class="gradient-text">Students</span></h2>
+      <div class="text-center mb-10 sm:mb-16" data-aos="fade-up">
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Loved by <span class="gradient-text">Students</span></h2>
       </div>
       <div class="grid md:grid-cols-3 gap-6" id="testimonialsGrid"></div>
     </div>
   </section>
 
   <!-- FAQ -->
-  <section id="faq" class="py-24 px-6 bg-[var(--bg-secondary)]">
+  <section id="faq" class="section-pad px-4 sm:px-6 bg-[var(--bg-secondary)]">
     <div class="max-w-3xl mx-auto">
-      <div class="text-center mb-16" data-aos="fade-up">
-        <h2 class="text-4xl font-bold mb-4">Frequently Asked <span class="gradient-text">Questions</span></h2>
+      <div class="text-center mb-10 sm:mb-16" data-aos="fade-up">
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Frequently Asked <span class="gradient-text">Questions</span></h2>
       </div>
       <div class="space-y-4" id="faqList"></div>
     </div>
   </section>
 
   <!-- Contact -->
-  <section id="contact" class="py-24 px-6">
+  <section id="contact" class="section-pad px-4 sm:px-6">
     <div class="max-w-2xl mx-auto">
-      <div class="text-center mb-12" data-aos="fade-up">
-        <h2 class="text-4xl font-bold mb-4">Get in <span class="gradient-text">Touch</span></h2>
+      <div class="text-center mb-8 sm:mb-12" data-aos="fade-up">
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Get in <span class="gradient-text">Touch</span></h2>
         <p class="text-[var(--text-secondary)]">Have questions? We'd love to hear from you.</p>
       </div>
       <form id="contactForm" class="card space-y-4" data-aos="fade-up">
@@ -180,10 +252,10 @@
   </section>
 
   <!-- Footer -->
-  <footer class="py-12 px-6 border-t border-[var(--border)]">
-    <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-8">
+  <footer class="py-10 sm:py-12 px-4 sm:px-6 border-t border-[var(--border)]">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center sm:text-left">
       <div>
-        <div class="flex items-center gap-2 text-xl font-bold mb-4"><span>🎓</span><span class="gradient-text">AcademicOS</span></div>
+        <div class="flex items-center justify-center sm:justify-start gap-2 text-xl font-bold mb-4"><span class="brand-logo sm">AO</span><span class="gradient-text">AcademicOS</span></div>
         <p class="text-sm text-[var(--text-muted)]">AI-powered platform for student success, CGPA optimization, and placement readiness.</p>
       </div>
       <div><h4 class="font-semibold mb-4">Product</h4><ul class="space-y-2 text-sm text-[var(--text-secondary)]"><li><a href="#features">Features</a></li><li><a href="#demos">Demos</a></li><li><a href="register.html">Sign Up</a></li></ul></div>
@@ -200,7 +272,17 @@
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script src="js/config.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/icons.js"></script>
   <script src="js/utils.js"></script>
+  <script>
+    document.querySelectorAll('.theme-icon-light').forEach(el => { el.innerHTML = Icons.svg(Icons.sun); });
+    document.querySelectorAll('.theme-icon-dark').forEach(el => { el.innerHTML = Icons.svg(Icons.moon); });
+    document.getElementById('heroIcon1').innerHTML = Icons.render('chart', 'icon');
+    document.getElementById('heroIcon2').innerHTML = Icons.render('brain', 'icon');
+    document.getElementById('heroIcon3').innerHTML = Icons.render('trending', 'icon');
+    document.getElementById('heroMini1').innerHTML = Icons.render('target', 'icon');
+    document.getElementById('heroMini2').innerHTML = Icons.render('trophy', 'icon');
+  </script>
   <script src="js/theme.js"></script>
   <script src="js/landing.js"></script>
 </body>
