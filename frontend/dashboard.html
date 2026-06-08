@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard – AcademicOS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="animated-bg"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="flex items-center gap-2 mb-8 px-2">
+      <span class="text-2xl">🎓</span>
+      <span class="text-lg font-bold gradient-text">AcademicOS</span>
+    </div>
+
+    <nav class="space-y-1" id="sidebarNav">
+      <a class="sidebar-link active" data-section="overview">📊 Overview</a>
+      <a class="sidebar-link" data-section="cgpa">🎯 CGPA Predictor</a>
+      <a class="sidebar-link" data-section="study-plan">🤖 AI Study Planner</a>
+      <a class="sidebar-link" data-section="weakness">🔍 Weakness Detector</a>
+      <a class="sidebar-link" data-section="attendance">📅 Attendance</a>
+      <a class="sidebar-link" data-section="backlog">📚 Backlog Recovery</a>
+      <a class="sidebar-link" data-section="placement">💼 Placement</a>
+      <a class="sidebar-link" data-section="analytics">📈 Analytics</a>
+      <a class="sidebar-link" data-section="exam-predict">📝 Exam Predictor</a>
+      <a class="sidebar-link" data-section="notes">📄 AI Notes</a>
+      <a class="sidebar-link" data-section="topper">🏆 Topper Mode</a>
+      <div class="border-t border-[var(--border)] my-3"></div>
+      <a class="sidebar-link" data-section="productivity">⏱️ Productivity</a>
+      <a class="sidebar-link" data-section="gamification">🎮 Gamification</a>
+      <a class="sidebar-link" data-section="tasks">✅ Tasks</a>
+    </nav>
+
+    <div class="absolute bottom-6 left-5 right-5">
+      <div class="glass p-3 rounded-xl mb-3">
+        <div class="flex items-center justify-between text-sm mb-1">
+          <span class="text-[var(--text-secondary)]">Level <span id="userLevel">1</span></span>
+          <span class="text-[var(--text-muted)]"><span id="userXP">0</span> XP</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="xpBar" style="width:0%"></div></div>
+      </div>
+      <button onclick="Auth.logout()" class="sidebar-link w-full text-red-400">🚪 Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Top Bar -->
+    <header class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-4">
+        <button class="btn btn-ghost lg:hidden" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <div>
+          <h1 class="text-2xl font-bold" id="pageTitle">Overview</h1>
+          <p class="text-sm text-[var(--text-secondary)]">Welcome back, <span id="userName">Student</span></p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button data-theme-toggle class="btn btn-ghost p-2">
+          <span class="theme-icon-light">☀️</span><span class="theme-icon-dark" style="display:none">🌙</span>
+        </button>
+        <div class="relative">
+          <button class="btn btn-ghost p-2" onclick="toggleNotifications()">🔔<span id="notifBadge" class="hidden absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs flex items-center justify-center">0</span></button>
+          <div id="notifPanel" class="hidden absolute right-0 top-12 w-80 glass rounded-xl p-4 max-h-96 overflow-y-auto z-50"></div>
+        </div>
+        <div class="badge badge-primary" id="aiCredits">50 AI Credits</div>
+      </div>
+    </header>
+
+    <!-- Sections -->
+    <div id="sections">
+      <!-- Overview -->
+      <section id="section-overview" class="section active">
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div class="stat-card"><div class="stat-label">Study Streak</div><div class="stat-value gradient-text" id="streakVal">0🔥</div></div>
+          <div class="stat-card"><div class="stat-label">Total XP</div><div class="stat-value" id="xpVal">0</div></div>
+          <div class="stat-card"><div class="stat-label">Level</div><div class="stat-value" id="levelVal">1</div></div>
+          <div class="stat-card"><div class="stat-label">AI Credits</div><div class="stat-value" id="creditsVal">50</div></div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="card"><h3 class="font-semibold mb-4">Quick Actions</h3>
+            <div class="grid grid-cols-2 gap-3">
+              <button onclick="navigateTo('cgpa')" class="btn btn-secondary text-sm">CGPA Predict</button>
+              <button onclick="navigateTo('study-plan')" class="btn btn-secondary text-sm">Study Plan</button>
+              <button onclick="navigateTo('attendance')" class="btn btn-secondary text-sm">Attendance</button>
+              <button onclick="navigateTo('productivity')" class="btn btn-secondary text-sm">Pomodoro</button>
+            </div>
+          </div>
+          <div class="card"><h3 class="font-semibold mb-4">Active Challenges</h3><div id="overviewChallenges" class="space-y-2 text-sm"></div></div>
+        </div>
+      </section>
+
+      <!-- CGPA Predictor -->
+      <section id="section-cgpa" class="section hidden">
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="card">
+            <h3 class="text-lg font-semibold mb-4">CGPA Predictor</h3>
+            <form id="cgpaForm" class="space-y-4">
+              <div><label class="text-sm text-[var(--text-secondary)]">Current CGPA</label>
+                <input type="number" name="currentCGPA" class="input-field mt-1" step="0.01" min="0" max="10" required></div>
+              <div><label class="text-sm text-[var(--text-secondary)]">Target CGPA</label>
+                <input type="number" name="targetCGPA" class="input-field mt-1" step="0.01" min="0" max="10" required></div>
+              <div><label class="text-sm text-[var(--text-secondary)]">Remaining Semesters</label>
+                <input type="number" name="remainingSemesters" class="input-field mt-1" min="1" max="8" required></div>
+              <button type="submit" class="btn btn-primary w-full">Calculate Required SGPA</button>
+            </form>
+          </div>
+          <div class="card" id="cgpaResults"><p class="text-[var(--text-muted)] text-center py-12">Enter values to see predictions</p></div>
+        </div>
+      </section>
+
+      <!-- AI Study Planner -->
+      <section id="section-study-plan" class="section hidden">
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="card">
+            <h3 class="text-lg font-semibold mb-4">AI Study Planner <span class="badge badge-primary text-xs">1 Credit</span></h3>
+            <form id="studyPlanForm" class="space-y-4">
+              <div><label class="text-sm text-[var(--text-secondary)]">Plan Title</label>
+                <input type="text" name="title" class="input-field mt-1" placeholder="Mid-term Prep"></div>
+              <div><label class="text-sm text-[var(--text-secondary)]">Subjects (comma separated)</label>
+                <input type="text" name="subjects" class="input-field mt-1" placeholder="DSA, OS, DBMS" required></div>
+              <div><label class="text-sm text-[var(--text-secondary)]">Exam Date</label>
+                <input type="date" name="examDate" class="input-field mt-1" required></div>
+              <div><label class="text-sm text-[var(--text-secondary)]">Available Hours/Day</label>
+                <input type="number" name="availableHours" class="input-field mt-1" min="1" max="16" value="4" required></div>
+              <button type="submit" class="btn btn-primary w-full">Generate AI Plan</button>
+            </form>
+          </div>
+          <div class="card"><h3 class="font-semibold mb-4">Generated Plan</h3><div id="studyPlanResults" class="text-sm max-h-96 overflow-y-auto"></div></div>
+        </div>
+        <div class="card mt-6"><h3 class="font-semibold mb-4">Saved Plans</h3><div id="savedPlans"></div></div>
+      </section>
+
+      <!-- Weakness Detector -->
+      <section id="section-weakness" class="section hidden">
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="card">
+            <h3 class="text-lg font-semibold mb-4">Weakness Detector <span class="badge badge-primary text-xs">1 Credit</span></h3>
+            <form id="weaknessForm" class="space-y-4">
+              <div id="marksContainer">
+                <div class="marks-row grid grid-cols-3 gap-2 mb-2">
+                  <input type="text" placeholder="Subject" class="input-field mark-subject">
+                  <input type="number" placeholder="Marks" class="input-field mark-marks">
+                  <input type="number" placeholder="Max" class="input-field mark-max" value="100">
+                </div>
+              </div>
+              <button type="button" onclick="addMarkRow()" class="btn btn-secondary text-sm">+ Add Subject</button>
+              <div><label class="text-sm text-[var(--text-secondary)]">Or Upload Marksheet PDF</label>
+                <input type="file" name="file" accept=".pdf" class="input-field mt-1"></div>
+              <button type="submit" class="btn btn-primary w-full">Analyze Weaknesses</button>
+            </form>
+          </div>
+          <div class="card" id="weaknessResults"><p class="text-[var(--text-muted)] text-center py-12">Submit marks to analyze</p></div>
+        </div>
+      </section>
+
+      <!-- Attendance -->
+      <section id="section-attendance" class="section hidden">
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="card">
+            <h3 class="text-lg font-semibold mb-4">Attendance Tracker</h3>
+            <form id="attendanceForm" class="space-y-4">
+              <input type="text" name="subject" class="input-field" placeholder="Subject Name" required>
+              <div class="grid grid-cols-2 gap-4">
+                <input type="number" name="presentClasses" class="input-field" placeholder="Present" required>
+                <input type="number" name="totalClasses" class="input-field" placeholder="Total" required>
+              </div>
+              <button type="submit" class="btn btn-primary w-full">Save Attendance</button>
+            </form>
+          </div>
+          <div class="card" id="attendanceResults"></div>
+        </div>
+      </section>
+
+      <!-- Backlog Recovery -->
+      <section id="section-backlog" class="section hidden">
+        <div class="card mb-6">
+          <h3 class="text-lg font-semibold mb-4">Backlog Recovery Planner</h3>
+          <form id="backlogForm" class="space-y-4">
+            <div id="backlogContainer">
+              <div class="backlog-row grid grid-cols-2 gap-2 mb-2">
+                <input type="text" placeholder="Subject" class="input-field backlog-subject">
+                <input type="date" class="input-field backlog-date">
+              </div>
+            </div>
+            <button type="button" onclick="addBacklogRow()" class="btn btn-secondary text-sm">+ Add Subject</button>
+            <button type="submit" class="btn btn-primary">Generate Recovery Plan</button>
+          </form>
+        </div>
+        <div id="backlogResults"></div>
+      </section>
+
+      <!-- Placement -->
+      <section id="section-placement" class="section hidden">
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="card">
+            <h3 class="text-lg font-semibold mb-4">Placement Readiness</h3>
+            <form id="placementForm" class="space-y-4">
+              <div><label class="text-sm text-[var(--text-secondary)]">DSA Problems Solved</label>
+                <input type="number" name="dsaProblemsSolved" class="input-field mt-1" min="0"></div>
+              <div><label class="text-sm text-[var(--text-secondary)]">Projects Built</label>
+                <input type="number" name="projectsBuilt" class="input-field mt-1" min="0"></div>
+              <div><label class="text-sm text-[var(--text-secondary)]">Aptitude Score (%)</label>
+                <input type="number" name="aptitudeScore" class="input-field mt-1" min="0" max="100"></div>
+              <div><label class="text-sm text-[var(--text-secondary)]">Communication Score (%)</label>
+                <input type="number" name="communicationScore" class="input-field mt-1" min="0" max="100"></div>
+              <button type="submit" class="btn btn-primary w-full">Update & Calculate</button>
+            </form>
+          </div>
+          <div class="card" id="placementResults"></div>
+        </div>
+      </section>
+
+      <!-- Analytics -->
+      <section id="section-analytics" class="section hidden">
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="card"><h3 class="font-semibold mb-4">Study Hours</h3><canvas id="studyHoursChart" height="200"></canvas></div>
+          <div class="card"><h3 class="font-semibold mb-4">CGPA Progress</h3><canvas id="cgpaChart" height="200"></canvas></div>
+          <div class="card"><h3 class="font-semibold mb-4">Attendance Trend</h3><canvas id="attendanceChart" height="200"></canvas></div>
+          <div class="card"><h3 class="font-semibold mb-4">Subject Performance</h3><canvas id="subjectChart" height="200"></canvas></div>
+        </div>
+      </section>
+
+      <!-- Exam Predictor -->
+      <section id="section-exam-predict" class="section hidden">
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="card">
+            <h3 class="text-lg font-semibold mb-4">Exam Score Predictor</h3>
+            <form id="examPredictForm" class="space-y-4">
+              <div><label class="text-sm text-[var(--text-secondary)]">Internal Marks (%)</label>
+                <input type="number" name="internalMarks" class="input-field mt-1" min="0" max="100" required></div>
+              <div><label class="text-sm text-[var(--text-secondary)]">Attendance (%)</label>
+                <input type="number" name="attendance" class="input-field mt-1" min="0" max="100" required></div>
+              <div><label class="text-sm text-[var(--text-secondary)]">Assignments (%)</label>
+                <input type="number" name="assignments" class="input-field mt-1" min="0" max="100" required></div>
+              <button type="submit" class="btn btn-primary w-full">Predict Score</button>
+            </form>
+          </div>
+          <div class="card" id="examPredictResults"><p class="text-[var(--text-muted)] text-center py-12">Enter values to predict</p></div>
+        </div>
+      </section>
+
+      <!-- AI Notes -->
+      <section id="section-notes" class="section hidden">
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="card">
+            <h3 class="text-lg font-semibold mb-4">AI Notes Generator <span class="badge badge-primary text-xs">2 Credits</span></h3>
+            <form id="notesGenerateForm" class="space-y-4">
+              <input type="text" name="title" class="input-field" placeholder="Note Title">
+              <input type="file" name="file" accept=".pdf,.ppt,.pptx,.doc,.docx" class="input-field" required>
+              <button type="submit" class="btn btn-primary w-full">Generate Notes</button>
+            </form>
+            <hr class="my-6 border-[var(--border)]">
+            <h4 class="font-semibold mb-3">Manual Note</h4>
+            <form id="notesManualForm" class="space-y-3">
+              <input type="text" name="title" class="input-field" placeholder="Title" required>
+              <textarea name="content" class="input-field resize-none" rows="4" placeholder="Write your note..." required></textarea>
+              <button type="submit" class="btn btn-secondary w-full">Save Note</button>
+            </form>
+          </div>
+          <div class="card"><h3 class="font-semibold mb-4">Your Notes</h3><div id="notesList" class="space-y-3 max-h-[500px] overflow-y-auto"></div></div>
+        </div>
+      </section>
+
+      <!-- Topper Mode -->
+      <section id="section-topper" class="section hidden">
+        <div class="card mb-6">
+          <h3 class="text-lg font-semibold mb-4">Topper Mode – Gap Analysis</h3>
+          <form id="topperForm" class="grid md:grid-cols-4 gap-4">
+            <input type="number" name="cgpa" class="input-field" placeholder="Your CGPA" step="0.01" value="7.5">
+            <input type="number" name="studyHours" class="input-field" placeholder="Study Hrs/Week" value="20">
+            <input type="number" name="dsaSolved" class="input-field" placeholder="DSA Solved" value="50">
+            <input type="number" name="mockTests" class="input-field" placeholder="Mock Tests" value="5">
+            <button type="submit" class="btn btn-primary md:col-span-4">Compare with Topper</button>
+          </form>
+        </div>
+        <div id="topperResults"></div>
+      </section>
+
+      <!-- Productivity -->
+      <section id="section-productivity" class="section hidden">
+        <div class="grid lg:grid-cols-3 gap-6">
+          <div class="card text-center">
+            <h3 class="font-semibold mb-6">Pomodoro Timer</h3>
+            <div class="pomodoro-ring mx-auto mb-6" id="pomodoroDisplay">25:00</div>
+            <div class="flex gap-3 justify-center">
+              <button onclick="startPomodoro()" class="btn btn-primary" id="pomoStart">Start</button>
+              <button onclick="resetPomodoro()" class="btn btn-secondary">Reset</button>
+            </div>
+            <div class="flex gap-2 justify-center mt-4">
+              <button onclick="setPomodoroMode(25)" class="tab-btn active" data-pomo="25">25 min</button>
+              <button onclick="setPomodoroMode(15)" class="tab-btn" data-pomo="15">15 min</button>
+              <button onclick="setPomodoroMode(5)" class="tab-btn" data-pomo="5">5 min</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3 class="font-semibold mb-4">Focus Mode</h3>
+            <p class="text-sm text-[var(--text-secondary)] mb-4">Enter distraction-free focus mode for deep studying.</p>
+            <button onclick="enterFocusMode()" class="btn btn-primary w-full">Enter Focus Mode</button>
+          </div>
+          <div class="card">
+            <h3 class="font-semibold mb-4">Habit Tracker</h3>
+            <form id="habitForm" class="flex gap-2 mb-4">
+              <input type="text" name="name" class="input-field flex-1" placeholder="New habit" required>
+              <button type="submit" class="btn btn-primary">Add</button>
+            </form>
+            <div id="habitsList" class="space-y-2"></div>
+          </div>
+        </div>
+        <div class="card mt-6">
+          <h3 class="font-semibold mb-4">Goal Tracker</h3>
+          <form id="goalForm" class="grid md:grid-cols-4 gap-3 mb-4">
+            <input type="text" name="title" class="input-field" placeholder="Goal title" required>
+            <input type="number" name="targetValue" class="input-field" placeholder="Target" required>
+            <input type="text" name="unit" class="input-field" placeholder="Unit (hrs, %)" >
+            <button type="submit" class="btn btn-primary">Add Goal</button>
+          </form>
+          <div id="goalsList" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <!-- Gamification -->
+      <section id="section-gamification" class="section hidden">
+        <div class="grid lg:grid-cols-3 gap-6">
+          <div class="card lg:col-span-2">
+            <h3 class="font-semibold mb-4">🏆 Leaderboard</h3>
+            <div id="leaderboard" class="overflow-x-auto"></div>
+          </div>
+          <div class="card">
+            <h3 class="font-semibold mb-4">🎖️ Achievements</h3>
+            <div id="achievementsList" class="space-y-2"></div>
+          </div>
+        </div>
+        <div class="card mt-6">
+          <h3 class="font-semibold mb-4">⚡ Challenges</h3>
+          <div id="challengesList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+      </section>
+
+      <!-- Tasks -->
+      <section id="section-tasks" class="section hidden">
+        <div class="card">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-semibold">Task Manager</h3>
+            <button onclick="showAddTask()" class="btn btn-primary text-sm">+ Add Task</button>
+          </div>
+          <div id="tasksList" class="space-y-3"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Focus Mode Overlay -->
+  <div class="focus-mode" id="focusMode">
+    <div class="text-6xl font-bold mb-8" id="focusTimer">25:00</div>
+    <p class="text-[var(--text-secondary)] mb-8">Stay focused. You've got this.</p>
+    <button onclick="exitFocusMode()" class="btn btn-secondary">Exit Focus Mode</button>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

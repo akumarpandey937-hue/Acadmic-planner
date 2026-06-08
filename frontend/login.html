@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login – AcademicOS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+  <div class="animated-bg"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+
+  <div class="w-full max-w-md relative z-10" data-aos="fade-up">
+    <div class="text-center mb-8">
+      <a href="/" class="inline-flex items-center gap-2 text-2xl font-bold mb-2">
+        <span>🎓</span><span class="gradient-text">AcademicOS</span>
+      </a>
+      <p class="text-[var(--text-secondary)]">Welcome back! Sign in to continue.</p>
+    </div>
+
+    <form id="loginForm" class="glass p-8 rounded-2xl space-y-5">
+      <div>
+        <label class="text-sm font-medium text-[var(--text-secondary)] mb-1 block">Email</label>
+        <input type="email" name="email" class="input-field" placeholder="you@college.edu" required>
+      </div>
+      <div>
+        <label class="text-sm font-medium text-[var(--text-secondary)] mb-1 block">Password</label>
+        <input type="password" name="password" class="input-field" placeholder="••••••••" required>
+      </div>
+      <div class="flex items-center justify-between">
+        <label class="flex items-center gap-2 text-sm cursor-pointer">
+          <input type="checkbox" name="rememberMe" class="rounded">
+          Remember me
+        </label>
+        <a href="forgot-password.html" class="text-sm text-primary hover:underline" style="color:var(--primary-light)">Forgot password?</a>
+      </div>
+      <button type="submit" class="btn btn-primary w-full py-3" id="loginBtn">Sign In</button>
+      <p class="text-center text-sm text-[var(--text-secondary)]">
+        Don't have an account? <a href="register.html" class="font-semibold" style="color:var(--primary-light)">Register</a>
+      </p>
+    </form>
+
+    <div class="flex justify-center mt-6">
+      <button data-theme-toggle class="btn btn-ghost text-sm">
+        <span class="theme-icon-light">☀️ Light</span><span class="theme-icon-dark" style="display:none">🌙 Dark</span>
+      </button>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/theme.js"></script>
+  <script>
+    if (Auth.isAuthenticated()) {
+      window.location.href = Auth.isAdmin() ? 'admin.html' : 'dashboard.html';
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('loginBtn');
+      btn.disabled = true;
+      btn.textContent = 'Signing in...';
+      const fd = new FormData(e.target);
+      try {
+        const res = await Auth.login(fd.get('email'), fd.get('password'), fd.get('rememberMe') === 'on');
+        Utils.toast('Welcome back!', 'success');
+        setTimeout(() => {
+          window.location.href = res.user.role === 'admin' ? 'admin.html' : 'dashboard.html';
+        }, 500);
+      } catch (err) {
+        Utils.toast(err.message, 'error');
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard – AcademicOS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="animated-bg"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="flex items-center gap-2 mb-8 px-2">
+      <span class="text-2xl">🎓</span>
+      <span class="text-lg font-bold gradient-text">Admin Panel</span>
+    </div>
+    <nav class="space-y-1">
+      <a class="sidebar-link active" data-section="dashboard">📊 Dashboard</a>
+      <a class="sidebar-link" data-section="users">👥 Users</a>
+      <a class="sidebar-link" data-section="reports">📋 Reports</a>
+      <a class="sidebar-link" data-section="notifications">🔔 Notifications</a>
+      <a class="sidebar-link" data-section="ai-credits">🤖 AI Credits</a>
+    </nav>
+    <div class="absolute bottom-6 left-5 right-5 space-y-2">
+      <a href="dashboard.html" class="sidebar-link">← Student Dashboard</a>
+      <button onclick="Auth.logout()" class="sidebar-link w-full text-red-400">🚪 Logout</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-bold" id="adminTitle">Admin Dashboard</h1>
+        <p class="text-sm text-[var(--text-secondary)]">Manage AcademicOS platform</p>
+      </div>
+      <button data-theme-toggle class="btn btn-ghost p-2">
+        <span class="theme-icon-light">☀️</span><span class="theme-icon-dark" style="display:none">🌙</span>
+      </button>
+    </header>
+
+    <!-- Dashboard -->
+    <section id="section-dashboard" class="admin-section">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value" id="totalUsers">-</div></div>
+        <div class="stat-card"><div class="stat-label">Active Users</div><div class="stat-value" id="activeUsers">-</div></div>
+        <div class="stat-card"><div class="stat-label">Study Sessions</div><div class="stat-value" id="totalSessions">-</div></div>
+        <div class="stat-card"><div class="stat-label">Avg CGPA</div><div class="stat-value" id="avgCGPA">-</div></div>
+      </div>
+      <div class="card">
+        <h3 class="font-semibold mb-4">Recent Registrations</h3>
+        <div id="recentUsers"></div>
+      </div>
+    </section>
+
+    <!-- Users -->
+    <section id="section-users" class="admin-section hidden">
+      <div class="card">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-lg font-semibold">User Management</h3>
+          <input type="text" id="userSearch" class="input-field w-64" placeholder="Search users..." oninput="filterUsers()">
+        </div>
+        <div class="overflow-x-auto">
+          <table class="data-table" id="usersTable">
+            <thead><tr><th>Name</th><th>Email</th><th>College</th><th>Branch</th><th>XP</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="usersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reports -->
+    <section id="section-reports" class="admin-section hidden">
+      <div class="card">
+        <h3 class="text-lg font-semibold mb-6">Reports & Feedback</h3>
+        <div id="reportsList" class="space-y-4"></div>
+      </div>
+    </section>
+
+    <!-- Notifications -->
+    <section id="section-notifications" class="admin-section hidden">
+      <div class="card max-w-xl">
+        <h3 class="text-lg font-semibold mb-6">Send Notification</h3>
+        <form id="notifForm" class="space-y-4">
+          <input type="text" name="title" class="input-field" placeholder="Notification Title" required>
+          <textarea name="message" class="input-field resize-none" rows="4" placeholder="Message" required></textarea>
+          <select name="type" class="input-field">
+            <option value="info">Info</option>
+            <option value="success">Success</option>
+            <option value="warning">Warning</option>
+          </select>
+          <label class="flex items-center gap-2 text-sm">
+            <input type="checkbox" name="isGlobal"> Send to all users
+          </label>
+          <button type="submit" class="btn btn-primary w-full">Send Notification</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- AI Credits -->
+    <section id="section-ai-credits" class="admin-section hidden">
+      <div class="card max-w-xl">
+        <h3 class="text-lg font-semibold mb-6">Manage AI Credits</h3>
+        <form id="creditsForm" class="space-y-4">
+          <input type="text" name="userId" class="input-field" placeholder="User ID" required>
+          <input type="number" name="credits" class="input-field" placeholder="Credits amount" required>
+          <select name="action" class="input-field">
+            <option value="add">Add Credits</option>
+            <option value="subtract">Subtract Credits</option>
+            <option value="set">Set Credits</option>
+          </select>
+          <button type="submit" class="btn btn-primary w-full">Update Credits</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

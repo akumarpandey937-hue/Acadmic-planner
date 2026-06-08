@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register – AcademicOS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="min-h-screen flex items-center justify-center p-6 py-12">
+  <div class="animated-bg"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+
+  <div class="w-full max-w-lg relative z-10">
+    <div class="text-center mb-8">
+      <a href="/" class="inline-flex items-center gap-2 text-2xl font-bold mb-2">
+        <span>🎓</span><span class="gradient-text">AcademicOS</span>
+      </a>
+      <p class="text-[var(--text-secondary)]">Create your account and start optimizing.</p>
+    </div>
+
+    <form id="registerForm" class="glass p-8 rounded-2xl space-y-4">
+      <div class="grid md:grid-cols-2 gap-4">
+        <div><label class="text-sm font-medium text-[var(--text-secondary)] mb-1 block">Full Name</label>
+          <input type="text" name="name" class="input-field" placeholder="John Doe" required></div>
+        <div><label class="text-sm font-medium text-[var(--text-secondary)] mb-1 block">Email</label>
+          <input type="email" name="email" class="input-field" placeholder="you@college.edu" required></div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div><label class="text-sm font-medium text-[var(--text-secondary)] mb-1 block">Phone</label>
+          <input type="tel" name="phone" class="input-field" placeholder="+91 98765 43210" required></div>
+        <div><label class="text-sm font-medium text-[var(--text-secondary)] mb-1 block">Semester</label>
+          <input type="number" name="semester" class="input-field" min="1" max="12" placeholder="5" required></div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div><label class="text-sm font-medium text-[var(--text-secondary)] mb-1 block">College</label>
+          <input type="text" name="college" class="input-field" placeholder="Your College" required></div>
+        <div><label class="text-sm font-medium text-[var(--text-secondary)] mb-1 block">University</label>
+          <input type="text" name="university" class="input-field" placeholder="Your University" required></div>
+      </div>
+      <div><label class="text-sm font-medium text-[var(--text-secondary)] mb-1 block">Branch</label>
+        <input type="text" name="branch" class="input-field" placeholder="Computer Science" required></div>
+      <div><label class="text-sm font-medium text-[var(--text-secondary)] mb-1 block">Password</label>
+        <input type="password" name="password" class="input-field" placeholder="Min 6 characters" minlength="6" required></div>
+      <button type="submit" class="btn btn-primary w-full py-3" id="registerBtn">Create Account</button>
+      <p class="text-center text-sm text-[var(--text-secondary)]">
+        Already have an account? <a href="login.html" class="font-semibold" style="color:var(--primary-light)">Login</a>
+      </p>
+    </form>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/theme.js"></script>
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('registerBtn');
+      btn.disabled = true;
+      btn.textContent = 'Creating account...';
+      const fd = new FormData(e.target);
+      const data = Object.fromEntries(fd);
+      data.semester = parseInt(data.semester);
+      try {
+        await Auth.register(data);
+        Utils.toast('Account created! Check email for verification.', 'success');
+        setTimeout(() => window.location.href = 'dashboard.html', 1000);
+      } catch (err) {
+        Utils.toast(err.message, 'error');
+        btn.disabled = false;
+        btn.textContent = 'Create Account';
+      }
+    });
+  </script>
+</body>
+</html>

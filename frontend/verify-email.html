@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Email – AcademicOS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+  <div class="animated-bg"><div class="orb orb-1"></div></div>
+  <div class="glass p-12 rounded-2xl text-center max-w-md relative z-10">
+    <div class="text-6xl mb-6" id="verifyIcon">⏳</div>
+    <h1 class="text-2xl font-bold mb-4" id="verifyTitle">Verifying Email...</h1>
+    <p class="text-[var(--text-secondary)] mb-6" id="verifyMessage">Please wait while we verify your email address.</p>
+    <a href="dashboard.html" class="btn btn-primary hidden" id="dashboardLink">Go to Dashboard</a>
+    <a href="login.html" class="btn btn-secondary hidden" id="loginLink">Go to Login</a>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    const token = new URLSearchParams(window.location.search).get('token');
+    if (!token) {
+      document.getElementById('verifyIcon').textContent = '❌';
+      document.getElementById('verifyTitle').textContent = 'Invalid Link';
+      document.getElementById('verifyMessage').textContent = 'No verification token found.';
+      document.getElementById('loginLink').classList.remove('hidden');
+    } else {
+      api.get(`/auth/verify-email/${token}`).then(res => {
+        document.getElementById('verifyIcon').textContent = '✅';
+        document.getElementById('verifyTitle').textContent = 'Email Verified!';
+        document.getElementById('verifyMessage').textContent = res.message || 'Your email has been verified successfully.';
+        document.getElementById('dashboardLink').classList.remove('hidden');
+      }).catch(err => {
+        document.getElementById('verifyIcon').textContent = '❌';
+        document.getElementById('verifyTitle').textContent = 'Verification Failed';
+        document.getElementById('verifyMessage').textContent = err.message;
+        document.getElementById('loginLink').classList.remove('hidden');
+      });
+    }
+  </script>
+</body>
+</html>
