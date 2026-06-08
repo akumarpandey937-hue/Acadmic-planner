@@ -44,12 +44,12 @@ const Auth = {
     localStorage.removeItem('user');
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('user');
-    window.location.href = '/login.html';
+    window.location.href = appPath('login.html');
   },
 
   requireAuth() {
     if (!this.isAuthenticated()) {
-      window.location.href = '/login.html';
+      window.location.href = appPath('login.html');
       return false;
     }
     return true;
@@ -58,7 +58,7 @@ const Auth = {
   requireAdmin() {
     if (!this.requireAuth()) return false;
     if (!this.isAdmin()) {
-      window.location.href = '/dashboard.html';
+      window.location.href = appPath('dashboard.html');
       return false;
     }
     return true;

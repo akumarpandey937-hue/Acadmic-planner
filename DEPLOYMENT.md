@@ -2,10 +2,67 @@
 
 ## Deployment Options
 
-1. **VPS (DigitalOcean, AWS EC2, Linode)** – Full control
-2. **Railway / Render** – Easy Node.js hosting
-3. **Docker** – Containerized deployment
-4. **MongoDB Atlas** – Managed database (recommended)
+1. **GitHub Pages (Frontend)** – Free static hosting for UI demo
+2. **Render / Railway (Backend API)** – Pair with GitHub Pages for full app
+3. **VPS (DigitalOcean, AWS EC2, Linode)** – Full control, frontend + backend
+4. **Docker** – Containerized deployment
+5. **MongoDB Atlas** – Managed database (recommended)
+
+---
+
+## GitHub Pages (Frontend)
+
+The repo is structured so the **root folder** is the live website:
+
+```
+Project/
+├── css/
+├── js/
+├── index.html
+├── login.html
+├── dashboard.html
+├── backend/        ← API code (not run on Pages)
+└── README.md
+```
+
+### Steps
+
+1. Push the repo to GitHub (see README.md).
+2. Repo → **Settings** → **Pages**.
+3. Source: **main** branch, folder **/ (root)**.
+4. Save — site URL: `https://<username>.github.io/<repo-name>/`.
+
+### What works on Pages alone
+
+- Landing page, animations, demos (CGPA, study planner, placement)
+- All HTML/CSS/JS UI (login, register, dashboard layouts)
+
+### What needs a deployed backend
+
+- Login, registration, database, AI features, admin panel
+
+### Connect Pages to your API
+
+1. Deploy `backend/` to Render or Railway (see sections below).
+2. Edit `js/config.js` before pushing:
+
+```javascript
+const DEPLOYED_API_URL = 'https://your-api.onrender.com/api';
+```
+
+3. In backend `.env` on Render:
+
+```env
+FRONTEND_URL=https://your-username.github.io/your-repo-name
+```
+
+4. CORS already allows `*.github.io` origins.
+
+### Notes
+
+- `.nojekyll` in the root prevents GitHub from ignoring `_` folders.
+- Use **relative links** (`login.html`, `css/styles.css`) — already configured.
+- Do **not** commit `.env` — use host env vars for the backend only.
 
 ---
 

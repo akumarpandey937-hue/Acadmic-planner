@@ -18,7 +18,13 @@ connectDB().then(seedAdmin);
 setupSecurity(app);
 
 app.use(cors({
-  origin: [config.frontendUrl, 'http://localhost:3000', 'http://127.0.0.1:5500', 'http://localhost:5500'],
+  origin: [
+    config.frontendUrl,
+    'http://localhost:3000',
+    'http://127.0.0.1:5500',
+    'http://localhost:5500',
+    /^https:\/\/.*\.github\.io$/
+  ],
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
@@ -28,17 +34,18 @@ app.use('/api', apiLimiter);
 app.use('/api', require('./routes'));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use(express.static(path.join(__dirname, '../frontend')));
+const publicDir = path.join(__dirname, '..');
+app.use(express.static(publicDir, { index: 'index.html' }));
 
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api')) {
     return res.status(404).json({ success: false, message: 'API route not found' });
   }
-  const filePath = path.join(__dirname, '../frontend', req.path === '/' ? 'index.html' : req.path);
+  const filePath = path.join(publicDir, req.path === '/' ? 'index.html' : req.path);
   if (fs.existsSync(filePath) && !fs.statSync(filePath).isDirectory()) {
     return res.sendFile(filePath);
   }
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+  res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 app.use((err, req, res, next) => {

@@ -1,8 +1,11 @@
 node_modules/
 .env
+backend/node_modules/
 backend/uploads/*
 !backend/uploads/.gitkeep
 .DS_Store
 Thumbs.db
 *.log
 npm-debug.log*
+
+# Keep frontend at root for GitHub Pages — do not ignore html/css/js
